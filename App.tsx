@@ -1,5 +1,5 @@
-import React from 'react';
-import {Alert, StyleSheet, Text, View} from 'react-native';
+import React, {useState} from 'react';
+import {StyleSheet, Text, View} from 'react-native';
 import {Pressable as RNPressable} from 'react-native';
 import {
   GestureHandlerRootView,
@@ -7,21 +7,24 @@ import {
 } from 'react-native-gesture-handler';
 
 export default function App() {
+  const [ghCount, setGhCount] = useState(0);
+  const [rnCount, setRnCount] = useState(0);
+
   return (
     <GestureHandlerRootView style={styles.root}>
       <View pointerEvents="box-none" style={styles.parent}>
         <GHPressable
           style={styles.button}
-          onPress={() => Alert.alert('gesture-handler Pressable')}>
-          <Text style={styles.text}>gesture-handler (broken)</Text>
+          onPress={() => setGhCount(c => c + 1)}>
+          <Text style={styles.text}>gesture-handler: {ghCount}</Text>
         </GHPressable>
 
         <View style={styles.spacer} />
 
         <RNPressable
           style={styles.button}
-          onPress={() => Alert.alert('core Pressable')}>
-          <Text style={styles.text}>core RN (works)</Text>
+          onPress={() => setRnCount(c => c + 1)}>
+          <Text style={styles.text}>core RN: {rnCount}</Text>
         </RNPressable>
       </View>
     </GestureHandlerRootView>
