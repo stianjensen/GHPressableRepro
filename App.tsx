@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import React, {useRef, useState} from 'react';
+import {Animated, StyleSheet, Text, View} from 'react-native';
 import {Pressable as RNPressable} from 'react-native';
 import {
   GestureHandlerRootView,
@@ -9,6 +9,10 @@ import {
 export default function App() {
   const [ghCount, setGhCount] = useState(0);
   const [rnCount, setRnCount] = useState(0);
+
+  // Match the original LoginHome layout: an animated opacity on the overlay
+  // (held at full visibility here so it stays observable).
+  const opacity = useRef(new Animated.Value(0.18)).current;
 
   return (
     <GestureHandlerRootView style={styles.root}>
@@ -27,11 +31,13 @@ export default function App() {
           <Text style={styles.text}>core RN: {rnCount}</Text>
         </RNPressable>
 
-        {/* Absolute-positioned sibling overlay rendered on top of the buttons.
-            pointerEvents="box-none" should let touches pass through to siblings
-            underneath. Core RN Pressable receives them; gesture-handler Pressable
-            does not. */}
-        <View pointerEvents="box-none" style={styles.overlay} />
+        {/* Animated.View overlay (RN's Animated, not Reanimated) sitting on top
+            with pointerEvents="box-none". This mirrors the original layout
+            where the bug was observed. */}
+        <Animated.View
+          pointerEvents="box-none"
+          style={[styles.overlay, {opacity}]}
+        />
       </View>
     </GestureHandlerRootView>
   );
@@ -53,6 +59,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(255, 80, 80, 0.18)',
+    zIndex: 99,
+    backgroundColor: 'rgb(255, 80, 80)',
   },
 });
