@@ -12,7 +12,7 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <View pointerEvents="box-none" style={styles.parent}>
+      <View style={styles.card}>
         <GHPressable
           style={styles.button}
           onPress={() => setGhCount(c => c + 1)}>
@@ -26,6 +26,12 @@ export default function App() {
           onPress={() => setRnCount(c => c + 1)}>
           <Text style={styles.text}>core RN: {rnCount}</Text>
         </RNPressable>
+
+        {/* Absolute-positioned sibling overlay rendered on top of the buttons.
+            pointerEvents="box-none" should let touches pass through to siblings
+            underneath. Core RN Pressable receives them; gesture-handler Pressable
+            does not. */}
+        <View pointerEvents="box-none" style={styles.overlay} />
       </View>
     </GestureHandlerRootView>
   );
@@ -33,7 +39,7 @@ export default function App() {
 
 const styles = StyleSheet.create({
   root: {flex: 1, justifyContent: 'center', alignItems: 'center'},
-  parent: {padding: 24, borderWidth: 1, borderColor: '#888'},
+  card: {padding: 24, borderWidth: 1, borderColor: '#888'},
   button: {
     paddingVertical: 16,
     paddingHorizontal: 32,
@@ -41,4 +47,12 @@ const styles = StyleSheet.create({
   },
   text: {color: 'white', fontWeight: '600'},
   spacer: {height: 16},
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255, 80, 80, 0.18)',
+  },
 });
